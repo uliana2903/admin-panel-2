@@ -11,16 +11,16 @@ import java.util.List;
 public interface PlayerController {
 
     @PostMapping()
-    CreatePlayerResponse createPlayer(@Valid @RequestBody CreatePlayerRequest createPlayerRequest);
+    GetCreatedPlayerResponse createPlayer(@Valid @RequestBody CreatePlayerRequest createPlayerRequest);
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}")
     UpdatePlayerResponse updatePlayer(@PathVariable @Valid @Positive long id, @RequestBody UpdatePlayerRequest updatePlayerRequest);
 
     @DeleteMapping("/{id}")
     void deletePlayer(@PathVariable @Valid @Positive long id);
 
     @GetMapping("/{id}")
-    GetPlayerResponse getPlayer(@Valid @Positive @PathVariable long id);
+    GetCreatedPlayerResponse getPlayer(@Valid @Positive @PathVariable long id);
 
     @GetMapping()
     List<FilterPlayerResponse> getListByFilter(FilterPlayerRequest filterPlayerRequest);

@@ -1,59 +1,48 @@
 package com.example.demo.controllers;
 
 import com.example.demo.controllers.dto.*;
+import com.example.demo.mapper.PlayerMapper;
 import com.example.demo.service.PlayerService;
-import com.example.demo.service.dto.CreatePlayerService;
-import com.example.demo.service.dto.FilterPlayerService;
-import com.example.demo.service.dto.GetPlayersCountService;
-import com.example.demo.service.dto.UpdatePlayerService;
+import com.example.demo.service.dto.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class PlayerControllerImpl implements PlayerController{
     private final PlayerService playerService;
+    private final PlayerMapper playerMapper;
 
-    public PlayerControllerImpl(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public CreatePlayerResponse createPlayer(CreatePlayerRequest createPlayerRequest) {
-        CreatePlayerService createPlayerService = new CreatePlayerService(createPlayerRequest.getName(), createPlayerRequest.getTitle(),
-                createPlayerRequest.getRace(), createPlayerRequest.getProfession(), createPlayerRequest.getBirthday());
-        return playerService.createPlayer(createPlayerService);
+    public GetCreatedPlayerResponse createPlayer(CreatePlayerRequest createPlayerRequest) {
+        //TODO создать маппер и вызывать его dto = Mapper.map(createPlayerRequest);
+        CreatePlayerDto createPlayerDto = playerMapper.toCreatePlayerDto(createPlayerRequest);
+        return playerMapper.toGetCreatedPlayer(playerService.createPlayer(createPlayerDto));
     }
 
     public UpdatePlayerResponse updatePlayer(long id, UpdatePlayerRequest updatePlayerRequest) {
-        UpdatePlayerService updatePlayerService = new UpdatePlayerService(updatePlayerRequest.getName(), updatePlayerRequest.getTitle(),
-                updatePlayerRequest.getRace(), updatePlayerRequest.getProfession(), updatePlayerRequest.getBirthday(),
-                updatePlayerRequest.getBanned(), updatePlayerRequest.getExperience());
-        return playerService.updatePlayer(id, updatePlayerService);
+        UpdatePlayerDto updatePlayerDto = playerMapper.toUpdatePlayerDto(updatePlayerRequest);
+        return playerMapper.toUpdatePlayerResponse(playerService.updatePlayer(id, updatePlayerDto));
     }
 
     public void deletePlayer(long id) {
         playerService.deletePlayer(id);
     }
 
-    public GetPlayerResponse getPlayer(long id) {
-        return playerService.getPlayer(id);
+    public GetCreatedPlayerResponse getPlayer(long id) {
+        return playerMapper.toGetCreatedPlayer(playerService.getPlayer(id));
     }
 
     public int getPlayersCount(GetPlayersCountRequest getPlayersCountRequest){
-        GetPlayersCountService getPlayersCountService = new GetPlayersCountService(getPlayersCountRequest.getName(), getPlayersCountRequest.getTitle(),
-                getPlayersCountRequest.getRace(), getPlayersCountRequest.getProfession(), getPlayersCountRequest.getAfter(), getPlayersCountRequest.getBefore(),
-                getPlayersCountRequest.getBanned(), getPlayersCountRequest.getMinExperience(), getPlayersCountRequest.getMaxExperience(),
-                getPlayersCountRequest.getMinLevel(), getPlayersCountRequest.getMaxLevel());
-        return playerService.getPlayersCount(getPlayersCountService);
+        GetPlayersCountDto getPlayersCountDto = playerMapper.toGetPlayersCountDto(getPlayersCountRequest);
+        return playerService.getPlayersCount(getPlayersCountDto);
     }
 
     public List<FilterPlayerResponse> getListByFilter(FilterPlayerRequest filterPlayerRequest) {
-        FilterPlayerService filterPlayerService = new FilterPlayerService(filterPlayerRequest.getName(), filterPlayerRequest.getTitle(),
-                filterPlayerRequest.getRace(), filterPlayerRequest.getProfession(), filterPlayerRequest.getAfter(), filterPlayerRequest.getBefore(),
-                filterPlayerRequest.getBanned(), filterPlayerRequest.getMinExperience(), filterPlayerRequest.getMaxExperience(),
-                filterPlayerRequest.getMinLevel(), filterPlayerRequest.getMaxLevel(), filterPlayerRequest.getPlayerOrder(),
-                filterPlayerRequest.getPageNumber(), filterPlayerRequest.getPageSize());
-        return playerService.getListByFilter(filterPlayerService);
+        FilterPlayerDto filterPlayerDto = playerMapper.toFilterPlayerDto(filterPlayerRequest);
+        List<GetFilteredListDto> filteredList = playerService.getListByFilter(filterPlayerDto);
+        return playerMapper.toFilterPlayerResponse(filteredList);
     }
 }
 

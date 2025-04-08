@@ -15,28 +15,28 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException methodArgumentNotValidException) {
-        Map<String, String> errors = new HashMap<>(); //тут хранятся ошибки по ключу название и значению сообщение об ошибке
-        BindingResult bindingResult = methodArgumentNotValidException.getBindingResult(); //получаем отчет об ошибках валидации, какие поля не рпошли проверку и тд
-        List<FieldError> errorList = bindingResult.getFieldErrors(); //из отчета об ошибках берем информацию о конкретном поле и кладем в список
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException methodArgumentNotValidException) {
+//        Map<String, String> errors = new HashMap<>(); //тут хранятся ошибки по ключу название и значению сообщение об ошибке
+//        BindingResult bindingResult = methodArgumentNotValidException.getBindingResult(); //получаем отчет об ошибках валидации, какие поля не рпошли проверку и тд
+//        List<FieldError> errorList = bindingResult.getFieldErrors(); //из отчета об ошибках берем информацию о конкретном поле и кладем в список
+//
+//        for (FieldError fieldError : errorList) {
+//            String fieldName = fieldError.getField(); //ключ название ошибки
+//            String message = fieldError.getDefaultMessage(); //значение сообщение об ошибке
+//            errors.put(fieldName, message);
+//        }
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+//    }
 
-        for (FieldError fieldError : errorList) {
-            String fieldName = fieldError.getField(); //ключ название ошибки
-            String message = fieldError.getDefaultMessage(); //значение сообщение об ошибке
-            errors.put(fieldName, message);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<Response> handlePlayerNotFound(PlayerNotFoundException playerNotFoundException) {
+//        return getResponse(playerNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
+//    }
 
-    @ExceptionHandler
-    public ResponseEntity<Response> handlePlayerNotFound(PlayerNotFoundException playerNotFoundException) {
-        return getResponse(playerNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    public ResponseEntity<Response> getResponse(String message, HttpStatus httpStatus) {
-       Response response = new Response();
-       response.setMessage(message);
-       return new ResponseEntity<>(response, httpStatus);
-    }
+//    public ResponseEntity<Response> getResponse(String message, HttpStatus httpStatus) {
+//       Response response = new Response();
+//       response.setMessage(message);
+//       return new ResponseEntity<>(response, httpStatus);
+//    }
 }

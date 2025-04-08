@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.controllers.dto;
 
 import com.example.demo.entity.Profession;
 import com.example.demo.entity.Race;
@@ -7,15 +7,15 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Player {
+public class GetCreatedPlayerResponse {
     private Long id;
     private String name;
     private String title;
     private Race race;
     private Profession profession;
-    private int experience;
-    private int level;
-    private int untilNextLevel;
+    private Integer experience;
+    private Integer level;
+    private Integer untilNextLevel;
     private Long birthday;
-    private boolean banned;
+    private Boolean banned;
 }

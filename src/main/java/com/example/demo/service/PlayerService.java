@@ -1,24 +1,21 @@
 package com.example.demo.service;
 
 import com.example.demo.controllers.dto.*;
-import com.example.demo.service.dto.CreatePlayerService;
-import com.example.demo.service.dto.FilterPlayerService;
-import com.example.demo.service.dto.GetPlayersCountService;
-import com.example.demo.service.dto.UpdatePlayerService;
+import com.example.demo.service.dto.*;
 
 import java.util.List;
 
 public interface PlayerService {
 
-    CreatePlayerResponse createPlayer(CreatePlayerService createPlayerService);
+    GetCreatedPlayerDto createPlayer(CreatePlayerDto createPlayerDto);
 
-    UpdatePlayerResponse updatePlayer(long id, UpdatePlayerService updatePlayerService);
+    GetUpdatedPlayerDto updatePlayer(long id, UpdatePlayerDto updatePlayerDto);
 
     void deletePlayer(long id);
 
-    int getPlayersCount(GetPlayersCountService getPlayersCountService);
+    int getPlayersCount(GetPlayersCountDto getPlayersCountDto);
 
-    GetPlayerResponse getPlayer(long id);
+    GetCreatedPlayerDto getPlayer(long id);
 
-    List<FilterPlayerResponse> getListByFilter (FilterPlayerService filterPlayerService);
+    List<GetFilteredListDto> getListByFilter (FilterPlayerDto filterPlayerDto);
 }

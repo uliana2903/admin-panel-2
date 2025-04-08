@@ -7,16 +7,12 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class GetPlayersCountService {
+public class UpdatePlayerDto {
     private String name;
     private String title;
     private Race race;
     private Profession profession;
-    private Long after;
-    private Long before;
+    private Long birthday;
     private Boolean banned;
-    private Integer minExperience;
-    private Integer maxExperience;
-    private Integer minLevel;
-    private Integer maxLevel;
+    private Integer experience;
 }

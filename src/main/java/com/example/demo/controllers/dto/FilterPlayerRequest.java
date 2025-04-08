@@ -6,8 +6,6 @@ import com.example.demo.filter.PlayerOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
 @AllArgsConstructor
 @Data
 public class FilterPlayerRequest {
@@ -22,8 +20,7 @@ public class FilterPlayerRequest {
     private Integer maxExperience;
     private Integer minLevel;
     private Integer maxLevel;
-    private PlayerOrder playerOrder;
-    private Integer pageNumber;
-    private Integer pageSize;
-
+    private PlayerOrder order;
+    private Integer pageNumber = 3;
+    private Integer pageSize = 3;
 }

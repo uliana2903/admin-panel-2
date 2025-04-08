@@ -2,14 +2,14 @@ package com.example.demo.repository;
 
 
 import com.example.demo.Player;
-import com.example.demo.service.dto.FilterPlayerService;
-import com.example.demo.service.dto.GetPlayersCountService;
-import com.example.demo.service.dto.UpdatePlayerService;
+import com.example.demo.service.dto.FilterPlayerDto;
+import com.example.demo.service.dto.GetPlayersCountDto;
+import com.example.demo.service.dto.UpdatePlayerDto;
 
 import java.util.List;
 
 public interface PlayerRepository {
-    Player update(Player player, UpdatePlayerService updatePlayerService);
+    Player update(Player player, UpdatePlayerDto updatePlayerDto);
 
     void save(Player player);
 
@@ -17,8 +17,8 @@ public interface PlayerRepository {
 
     void delete(long id);
 
-    List<Player> getListByFilter(FilterPlayerService filterPlayerService);
+    List<Player> getListByFilter(FilterPlayerDto filterPlayerDto);
 
-    int getPlayersCount(GetPlayersCountService getPlayersCountService);
+    int getPlayersCount(GetPlayersCountDto getPlayersCountDto);
 }
 

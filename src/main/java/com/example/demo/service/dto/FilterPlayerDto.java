@@ -8,7 +8,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class FilterPlayerService {
+public class FilterPlayerDto {
     private String name;
     private String title;
     private Race race;
@@ -20,7 +20,7 @@ public class FilterPlayerService {
     private Integer maxExperience;
     private Integer minLevel;
     private Integer maxLevel;
-    private PlayerOrder playerOrder;
+    private PlayerOrder order;
     private Integer pageNumber;
     private Integer pageSize;
 }

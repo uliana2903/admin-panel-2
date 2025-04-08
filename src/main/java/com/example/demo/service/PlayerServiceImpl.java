@@ -4,66 +4,61 @@ import com.example.demo.Player;
 import com.example.demo.controllers.dto.*;
 import com.example.demo.exceptions.PlayerNotFoundException;
 import com.example.demo.repository.PlayerRepository;
-import com.example.demo.service.dto.CreatePlayerService;
-import com.example.demo.service.dto.FilterPlayerService;
-import com.example.demo.service.dto.GetPlayersCountService;
-import com.example.demo.service.dto.UpdatePlayerService;
+import com.example.demo.service.dto.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
 
-    public PlayerServiceImpl(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
-
-    public GetPlayerResponse getPlayer(long id) {
+    public GetCreatedPlayerDto getPlayer(long id) {
         Player player = playerRepository.findById(id);
         if (player == null) {
             throw new PlayerNotFoundException("Игрок не найден");
         }
-        return new GetPlayerResponse(player.getId(), player.getName(), player.getTitle(), player.getRace(),
-                player.getProfession(), player.getBirthday(), player.isBanned(), player.getExperience(),
-                player.getLevel(), player.getUntilNextLevel());
-    }
-
-    public int getPlayersCount(GetPlayersCountService getPlayersCountService) {
-        return playerRepository.getPlayersCount(getPlayersCountService);
-    }
-
-    public CreatePlayerResponse createPlayer(CreatePlayerService createPlayerService) {
-        int experience = 0;
-        Player player = new Player (null, createPlayerService.getName(),
-                createPlayerService.getTitle(),
-                createPlayerService.getRace(),
-                createPlayerService.getProfession(),
-                experience, calculateLevel(experience), calculateExperienceUntilNextLevel(experience),
-                createPlayerService.getBirthday(),
-                false);
-
-        playerRepository.save(player);
-
-        return new CreatePlayerResponse(player.getId(),
+        return new GetCreatedPlayerDto(player.getId(),
                 player.getName(), player.getTitle(), player.getRace(), player.getProfession(), player.getExperience(),
                 player.getLevel(), player.getUntilNextLevel(), player.getBirthday(), player.isBanned());
     }
 
-    public UpdatePlayerResponse updatePlayer(long id, UpdatePlayerService updatePlayerService) {
+    public int getPlayersCount(GetPlayersCountDto getPlayersCountDto) {
+        return playerRepository.getPlayersCount(getPlayersCountDto);
+    }
+
+    public GetCreatedPlayerDto createPlayer(CreatePlayerDto createPlayerDto) {
+        int experience = 0;
+        Player player = new Player (null, createPlayerDto.getName(),
+                createPlayerDto.getTitle(),
+                createPlayerDto.getRace(),
+                createPlayerDto.getProfession(),
+                experience, calculateLevel(experience), calculateExperienceUntilNextLevel(experience),
+                createPlayerDto.getBirthday(),
+                false);
+
+        playerRepository.save(player);
+
+        return new GetCreatedPlayerDto(player.getId(),
+                player.getName(), player.getTitle(), player.getRace(), player.getProfession(), player.getExperience(),
+                player.getLevel(), player.getUntilNextLevel(), player.getBirthday(), player.isBanned());
+    }
+
+    public GetUpdatedPlayerDto updatePlayer(long id, UpdatePlayerDto updatePlayerDto) {
         Player player = playerRepository.findById(id);
         if (player == null) {
             throw new PlayerNotFoundException("Игрок не найден");
         }
-        if (updatePlayerService.getExperience() != null){
-            player.setExperience(updatePlayerService.getExperience());
-            player.setLevel(calculateLevel(updatePlayerService.getExperience()));
-            player.setUntilNextLevel(calculateExperienceUntilNextLevel(updatePlayerService.getExperience()));
+        if (updatePlayerDto.getExperience() != null){
+            player.setExperience(updatePlayerDto.getExperience());
+            player.setLevel(calculateLevel(updatePlayerDto.getExperience()));
+            player.setUntilNextLevel(calculateExperienceUntilNextLevel(updatePlayerDto.getExperience()));
         }
-        playerRepository.update(player, updatePlayerService);
-        return new UpdatePlayerResponse(player.getId(), player.getName(), player.getTitle(), player.getRace(),
+        playerRepository.update(player, updatePlayerDto);
+        return new GetUpdatedPlayerDto(player.getId(), player.getName(), player.getTitle(), player.getRace(),
                 player.getProfession(), player.getBirthday(), player.isBanned(), player.getExperience(),
                 player.getLevel(), player.getUntilNextLevel());
     }
@@ -72,18 +67,17 @@ public class PlayerServiceImpl implements PlayerService {
         playerRepository.delete(id);
     }
 
-    public List<FilterPlayerResponse> getListByFilter(FilterPlayerService filterPlayerService){
-        List<Player> players = playerRepository.getListByFilter(filterPlayerService);
-        List<FilterPlayerResponse> responseList= new ArrayList<>();
+    public List<GetFilteredListDto> getListByFilter(FilterPlayerDto filterPlayerDto){
+        List<Player> players = playerRepository.getListByFilter(filterPlayerDto);
+        List<GetFilteredListDto> filteredList = new ArrayList<>();
         for (Player player : players) {
-            FilterPlayerResponse filterPlayerResponse = new FilterPlayerResponse(player.getId(),
+            GetFilteredListDto getFilteredListDto = new GetFilteredListDto(player.getId(),
                     player.getName(), player.getTitle(), player.getRace(), player.getProfession(),
                     player.getBirthday(), player.isBanned(), player.getExperience(),
-                    player.getLevel(), player.getUntilNextLevel()
-            );
-            responseList.add(filterPlayerResponse);
+                    player.getLevel(), player.getUntilNextLevel());
+            filteredList.add(getFilteredListDto);
         }
-        return responseList;
+        return filteredList;
     }
 
     public int calculateLevel(int experience) {

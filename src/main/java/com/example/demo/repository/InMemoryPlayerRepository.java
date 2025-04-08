@@ -4,11 +4,9 @@ import com.example.demo.Player;
 import com.example.demo.entity.Profession;
 import com.example.demo.entity.Race;
 import com.example.demo.exceptions.PlayerNotFoundException;
-import com.example.demo.filter.PlayerOrder;
-import com.example.demo.service.dto.FilterPlayerService;
-import com.example.demo.service.dto.GetPlayersCountService;
-import com.example.demo.service.dto.UpdatePlayerService;
-import lombok.RequiredArgsConstructor;
+import com.example.demo.service.dto.FilterPlayerDto;
+import com.example.demo.service.dto.GetPlayersCountDto;
+import com.example.demo.service.dto.UpdatePlayerDto;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -22,28 +20,40 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     public InMemoryPlayerRepository() {
         this.playersList = new ArrayList<>();
+        playersList.add(new Player(idSequence++, "hjerjlfk", "hverjk", Race.ELF, Profession.CLERIC, 0, 0, 100, 10000L, false));
+        playersList.add(new Player(idSequence++, "lknjlk", "kjnkl", Race.HOBBIT, Profession.CLERIC, 0, 0, 100, 30000L, false));
+        playersList.add(new Player(idSequence++, "hjerjlfk", "hverjk", Race.ELF, Profession.DRUID, 0, 0, 100, 20000L, false));
+        playersList.add(new Player(idSequence++, "bhjkhk", "dece", Race.DWARF, Profession.WARLOCK, 0, 0, 100, 15000L, false));
     }
 
-    public Player update(Player player, UpdatePlayerService updatePlayerService) {
-        if (updatePlayerService.getName() != null) {
-            player.setName(updatePlayerService.getName());
+    public Player update(Player player, UpdatePlayerDto updatePlayerDto) {
+        if (updatePlayerDto.getName() != null) {
+            player.setName(updatePlayerDto.getName());
         }
 
-        if (updatePlayerService.getTitle() != null) {
-            player.setTitle(updatePlayerService.getTitle());
+        if (updatePlayerDto.getTitle() != null) {
+            player.setTitle(updatePlayerDto.getTitle());
         }
 
-        if (updatePlayerService.getRace() != null) {
-            player.setRace(updatePlayerService.getRace());
+        if (updatePlayerDto.getRace() != null) {
+            player.setRace(updatePlayerDto.getRace());
         }
 
-        if (updatePlayerService.getProfession() != null) {
-            player.setProfession(updatePlayerService.getProfession());
+        if (updatePlayerDto.getProfession() != null) {
+            player.setProfession(updatePlayerDto.getProfession());
         }
 
-        if (updatePlayerService.getBanned() != null) {
-            player.setBanned(updatePlayerService.getBanned());
+        if (updatePlayerDto.getBirthday() != null) {
+            player.setBirthday(updatePlayerDto.getBirthday());
         }
+
+        if (updatePlayerDto.getBanned() != null) {
+            player.setBanned(updatePlayerDto.getBanned());
+        }
+        if (updatePlayerDto.getExperience() != null) {
+            player.setExperience(updatePlayerDto.getExperience());
+        }
+
         save(player);
         return player;
     }
@@ -81,22 +91,22 @@ public class InMemoryPlayerRepository implements PlayerRepository {
             };
         }
 
-    public List<Player> getListByFilter(FilterPlayerService filterPlayerService) {
-        int pageSize = Optional.ofNullable(filterPlayerService.getPageSize()) //
+    public List<Player> getListByFilter(FilterPlayerDto filterPlayerDto) {
+        int pageSize = Optional.ofNullable(filterPlayerDto.getPageSize()) //
                 .orElse(3); //количество элементов на текущей странице
-        int pageNumber = Optional.ofNullable(filterPlayerService.getPageNumber())
+        int pageNumber = Optional.ofNullable(filterPlayerDto.getPageNumber())
                 .orElse(0); //номер текущей страницы
         return playersList.stream()
-                .filter(new PlayerFilterPredicate(filterPlayerService))
-                .sorted(new PlayerComparator(filterPlayerService.getPlayerOrder()))
+                .filter(new PlayerFilterPredicate(filterPlayerDto))
+                .sorted(new PlayerComparator(filterPlayerDto.getOrder()))
                 .skip((long) pageSize * pageNumber) //пропустит первые 3 если null //используется для пропуска элементов предыдущих страниц
                 .limit(pageSize) //выдаст следующие 3 //используется для определения количества элементов на странице
                 .toList();
     }
 
-    public int getPlayersCount(GetPlayersCountService getPlayersCountService) {
+    public int getPlayersCount(GetPlayersCountDto getPlayersCountDto) {
         return (int) playersList.stream()
-                .filter(new FilterChecker(getPlayersCountService))
+                .filter(new PlayerFilterPredicate(getPlayersCountDto))
                 .count();
     }
 }
